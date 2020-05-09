@@ -63,6 +63,9 @@ LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
 volatile unsigned long fan_TimerOlder = millis()+TIME_FAN_ON;
 int Etat_fan = 0;
 
+//Power Supply 
+unsigned int Voltage = 0;
+
 
 void setup() {
   //LCD 
@@ -87,8 +90,13 @@ void setup() {
   pinMode(FAN_RELAY,OUTPUT);
   pinMode(TRANSFO_RELAY,OUTPUT);
   digitalWrite(TRANSFO_RELAY,RELAY_OFF); // Etre sur que le transo est a OFF par default 
-
-
+  lcd.setCursor(8,0);
+  lcd.print("FAN: ");
+  lcd.print("OFF");
+   
+  //Power Supply 
+  lcd.setCursor(2,0);
+  lcd.print(" Volt");
   
   Serial.begin(9600);
   
@@ -157,14 +165,48 @@ void loop() {
         delay(500); // delay tempon
       }
     
-      if(millis()-fan_TimerOlder < TIME_FAN_ON || Etat_fan == 1)
+      if(Etat_fan == 1)
       {
         digitalWrite(FAN_RELAY,RELAY_ON);
+        lcd.setCursor(13,0);
+        lcd.print(" ON");
+
+      }
+      else if(millis()-fan_TimerOlder < TIME_FAN_ON)
+      {
+        digitalWrite(FAN_RELAY,RELAY_ON);
+        
+        
+        tmp = (TIME_FAN_ON-(millis()-fan_TimerOlder))/1000; 
+        lcd.setCursor(13,0);
+        if(tmp < 10)
+        {
+          lcd.print(" ");
+        }
+        else
+        {
+        
+        }
+        lcd.print(tmp);
+        lcd.print("s");
       }
       else
       {
         digitalWrite(FAN_RELAY,RELAY_OFF);
+        lcd.setCursor(13,0);
+        lcd.print("OFF");
       }
+      //************************************* Power Supply  *****************************//
+      Voltage = analogRead(A0);
+      Voltage = map(Voltage,0,1023,0,40);
+      lcd.setCursor(0,0);
+      if(Voltage < 10)
+      {
+        lcd.print(" ");
+      }
+      
+      lcd.print(Voltage);
+      
    }
 }
 
