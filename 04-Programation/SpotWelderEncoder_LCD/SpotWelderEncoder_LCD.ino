@@ -36,8 +36,8 @@ enum ETAT {ETAT0,ETAT1,ETAT2,ETAT3};
 //SpotWelder  
 #define DEBUG_SPOTWELDER 1
 
-#define DEFAULT_TIME 50
-#define SOLDER_TIME 50
+#define DEFAULT_TIME 100
+#define SOLDER_TIME 100
 #define TIME_FAN_ON 60000
 
 //Mes relais son configurer a l'inverse
@@ -64,7 +64,7 @@ volatile unsigned long fan_TimerOlder = millis()+TIME_FAN_ON;
 int Etat_fan = 0;
 
 //Power Supply 
-unsigned int Voltage = 0;
+unsigned int Voltage = 35;
 
 
 void setup() {
@@ -197,8 +197,8 @@ void loop() {
         lcd.print("OFF");
       }
       //************************************* Power Supply  *****************************//
-      Voltage = analogRead(A0);
-      Voltage = map(Voltage,0,1023,0,40);
+     // Voltage = analogRead(A0);
+     // Voltage = map(Voltage,0,1023,0,40);
       lcd.setCursor(0,0);
       if(Voltage < 10)
       {
@@ -241,4 +241,16 @@ int lire_encodeur(int* p_etat_encodeur,int outa, int outb)
 
   return val;
   
+}
+
+void setUpLCD()
+{
+  
+  lcd.setCursor(8,0);
+  lcd.print("FAN: ");
+  lcd.print("OFF");
+   
+  //Power Supply 
+  lcd.setCursor(2,0);
+  lcd.print(" Volt");
 }
